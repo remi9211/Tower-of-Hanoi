@@ -1,0 +1,1198 @@
+<!-- <!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Tower of HANOI</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.0/jquery.min.js"></script>
+    <script src="jquery-ui/jquery-ui.js"></script>
+    <link rel="stylesheet" href="jquery-ui/jquery-ui.css" />
+    <style>
+      .platform {
+        height: 300px;
+        width: 200px;
+        background-color: lavender;
+        margin-right: 20px;
+      }
+      .bottom {
+        width: 200px;
+        height: 5px;
+        background-color: red;
+        position: relative;
+        align-items: center;
+        top: 299px;
+      }
+      .vertical {
+        width: 5px;
+        height: 200px;
+        background-color: red;
+        position: relative;
+        left: -100px;
+        top: 99px;
+      }
+      .bottom2 {
+        width: 200px;
+        height: 5px;
+        background-color: red;
+        position: relative;
+        align-items: center;
+        top: 299px;
+        left: -325px;
+      }
+      .vertical2 {
+        width: 5px;
+        height: 200px;
+        background-color: red;
+        position: relative;
+        left: -425px;
+        top: 99px;
+      }
+      .bottom3 {
+        width: 200px;
+        height: 5px;
+        background-color: red;
+        position: relative;
+        align-items: center;
+        top: 299px;
+        left: -300px;
+      }
+      .vertical3 {
+        width: 5px;
+        height: 200px;
+        background-color: red;
+        position: relative;
+        left: -400px;
+        top: 99px;
+      }
+      .container {
+        display: flex;
+      }
+      .shape1 {
+        width: 160px;
+        height: 50px;
+        background-color: aqua;
+        position: relative;
+        top: 249px;
+        left: -180px;
+        z-index: 1;
+      }
+      .shape2 {
+        width: 110px;
+        height: 50px;
+        background-color: royalblue;
+        position: relative;
+        top: 200px;
+        left: -315px;
+
+        z-index: 1;
+      }
+      .shape3 {
+        width: 80px;
+        height: 50px;
+        background-color: yellowgreen;
+        position: relative;
+        top: 150px;
+        left: -410px;
+        z-index: 1;
+      }
+      #holderof1 {
+        background-color: royalblue;
+        height: 0.5px;
+        width: 10px;
+        margin: 0 auto;
+      }
+      #holderof2 {
+        background-color: aqua;
+        height: 0.5px;
+        width: 10px;
+        margin: 0 auto;
+      }
+      #holderof3 {
+        height: 0.5px;
+        width: 100px;
+        margin: 0 auto;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="bottom"><div id="holderof3"></div></div>
+      <div class="vertical"></div>
+
+      <div class="shape1" id="shape1" value="1">
+        <div id="holderof2"></div>
+      </div>
+      <div class="shape2" id="shape2" value="2">
+        <div id="holderof1"></div>
+      </div>
+      <div class="shape3" id="shape3" value="3"></div>
+
+      <div class="bottom2"><div id="holderof3x2"></div></div>
+      <div class="vertical2"></div>
+
+      <div class="bottom3"><div id="holderof3x3"></div></div>
+      <div class="vertical3"></div>
+    </div>
+    <script type="text/javascript">
+      var dragGreen = true;
+      var dragBlue = false;
+      var dragTurq = false;
+      var onBottom = true;
+      var onBottom2 = false;
+      var onBottom3 = false;
+      var shape1Top = $(".shape1").offset().top;
+      var shape1Left = $(".shape1").offset().left;
+      var shape2Top = $(".shape2").offset().top;
+      var shape2Left = $(".shape2").offset().left;
+      var shape3Top = $(".shape3").offset().top;
+      var shape3Left = $(".shape3").offset().left;
+      var bottom = $(".bottom").offset().left;
+      var bottom2 = $(".bottom2").offset().left;
+      var bottom3 = $(".bottom3").offset().left;
+      var s1Platform = 1;
+      var s2Platform = 1;
+      var s3Platform = 1;
+
+      console.log("Shape 1 is on Platform " + checkPlatform(".shape1"));
+      console.log("Shape 2 is on Platform " + checkPlatform(".shape2"));
+      console.log("Shape 3 is on Platform " + checkPlatform(".shape3"));
+
+      // $(".shape3").draggable({
+      //   snap: "#holderof1, #holderof2,#holderof3x2,#holderof3,#holderof3x3",
+      //   snapTolerance: 30,
+      //   stop: function () {
+      //     console.log("Shape 3 is on Platform " + checkPlatform(".shape3"));
+      //     console.log("Shape 2 is on Platform " + checkPlatform(".shape2"));
+
+      //     //shape3Top = shape3Top + 50;
+
+      //     // if (checkPlatform(".shape2") != checkPlatform(".shape3")) {
+      //     //   $(".shape2").draggable({
+      //     //     snap: "#holderof2,#holderof3x2,#holderof3,#holderof3x3",
+      //     //     snapTolerance: 30,
+      //     //   });
+      //     // } else {
+      //     //   $(".shape2").draggable({ disabled: true });
+      //     // }
+      //   },
+      // });
+      // $(".shape2").draggable({
+      //   snap: true,
+      //   start: function () {
+      //     if (checkPlatform(".shape3") == checkPlatform(".shape2")) {
+      //       console.log("same platform 2");
+      //       $(".shape2").draggable({ disabled: true });
+      //     } else {
+      //       console.log("not same platform 2");
+      //     }
+      //   },
+      // });
+      // var myDiv = document.getElementById(".shape2");
+      $(".shape2").click(function () {
+        console.log("clicked");
+        if (checkPlatform(".shape3") != checkPlatform(".shape2")) {
+          console.log("not equal");
+          $(".shape2").draggable({
+            snap: "#holderof2,#holderof3x2,#holderof3,#holderof3x3",
+          });
+        } else if (checkPlatform(".shape3") == checkPlatform(".shape2")) {
+          console.log("equal");
+          $(".shape2").draggable({ disabled: true });
+        }
+      });
+      // $(".shape2").draggable({
+      //   snap: "#holderof2,#holderof3x2,#holderof3,#holderof3x3",
+      //   snapTolerance: 30,
+      //   start: function () {
+      //     if (checkPlatform(".shape2") != checkPlatform(".shape3")) {
+      //       $(".shape2").draggable({
+      //         snap: "#holderof2,#holderof3x2,#holderof3,#holderof3x3",
+      //         snapTolerance: 30,
+      //         stop: function () {
+      //           console.log(
+      //             "Shape 3 is on Platform " + checkPlatform(".shape3")
+      //           );
+      //           console.log(
+      //             "Shape 2 is on Platform " + checkPlatform(".shape2")
+      //           );
+      //           // updatePlatform(".shape2");
+      //         },
+      //       });
+      //     }
+      //   },
+      // });
+
+      function checkPlatform(shape) {
+        if ($(shape).offset().left >= 235 && $(shape).offset().left <= 360) {
+          return 2;
+        } else if (
+          $(shape).offset().left >= 460 &&
+          $(shape).offset().left <= 600
+        ) {
+          return 3;
+        } else {
+          return 1;
+        }
+      }
+      function updatePlatform(shape) {
+        if ($(shape).offset().left >= 235 && $(shape).offset().left <= 360) {
+          if (shape == ".shape1") {
+            s1Platform = 2;
+            return s1Platform;
+          }
+          if (shape == ".shape2") {
+            s2Platform = 2;
+            return s2Platform;
+          }
+          if (shape == ".shape3") {
+            s3Platform = 2;
+            return s3Platform;
+          }
+        } else if (
+          $(shape).offset().left >= 460 &&
+          $(shape).offset().left <= 600
+        ) {
+          if (shape == ".shape1") {
+            s1Platform = 3;
+            return s1Platform;
+          }
+          if (shape == ".shape2") {
+            s2Platform = 3;
+            return s2Platform;
+          }
+          if (shape == ".shape3") {
+            s3Platform = 3;
+            return s3Platform;
+          }
+        } else {
+          if (shape == ".shape1") {
+            s1Platform = 1;
+            return s1Platform;
+          }
+          if (shape == ".shape2") {
+            s2Platform = 1;
+            return s2Platform;
+          }
+          if (shape == ".shape3") {
+            s3Platform = 1;
+            return s3Platform;
+          }
+        }
+      }
+      //revert: true
+    </script>
+  </body>
+</html>
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Tower of Hanoi</title>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.13.0/jquery-ui.min.js"></script>
+    <style>
+      .vertical {
+        width: 250px;
+        height: 200px;
+        border: 1px solid #ccc;
+        display: inline-block;
+        vertical-align: top;
+      }
+      .disc {
+        width: 100%;
+        height: 20px;
+        margin-bottom: 5px;
+        background-color: #f0f0f0;
+        border: 1px solid #999;
+        cursor: move;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="tower" id="tower1"></div>
+    <div class="tower" id="tower2"></div>
+    <div class="tower" id="tower3"></div>
+    <script>
+      function towerOfHanoi(n, source, auxiliary, destination) {
+        if (n > 0) {
+          towerOfHanoi(n - 1, source, destination, auxiliary);
+
+          var disk = $(source).find(".disc").first().detach();
+          $(destination).prepend(disk);
+
+          towerOfHanoi(n - 1, auxiliary, source, destination);
+        }
+      }
+
+      $(document).ready(function () {
+        var towers = $(".tower");
+
+        towers.find(".disc").draggable({
+          revert: "invalid",
+        });
+
+        towers.droppable({
+          accept: function (draggable) {
+            var tower = $(this);
+            var topDisc = tower.find(".disc").first();
+
+            // Only allow placing smaller discs on top of larger discs or empty towers
+            return (
+              !topDisc.length ||
+              parseInt(draggable.attr("data-size")) <
+                parseInt(topDisc.attr("data-size"))
+            );
+          },
+          drop: function (event, ui) {
+            var disc = ui.draggable;
+            var sourceTower = disc.parent();
+            var targetTower = $(this);
+
+            targetTower.prepend(disc);
+
+            if ($("#tower3 .disc").length === 3) {
+              alert("Congratulations! You solved the Tower of Hanoi puzzle.");
+            }
+
+            // Perform the Tower of Hanoi logic
+            towerOfHanoi(
+              3,
+              sourceTower,
+              towers.not(sourceTower).not(targetTower),
+              targetTower
+            );
+          },
+        });
+      });
+    </script>
+  </body>
+</html> -->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Tower of Hanoi</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.0/jquery.min.js"></script>
+    <script src="jquery-ui/jquery-ui.js"></script>
+    <link rel="stylesheet" href="jquery-ui/jquery-ui.css" />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM"
+      crossorigin="anonymous"
+    />
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz"
+      crossorigin="anonymous"
+    ></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@800&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      /* @use postcss-preset-env {
+        stage: 0;
+      } */
+
+      /* :root {
+        --color-background: #000119;
+        --stroke-width: calc(1em / 16);
+        --font-size: 30vmin;
+        --font-weight: 700;
+        --letter-spacing: calc(1em / 8);
+      }
+
+      body {
+        background-color: var(--color-background);
+        display: grid;
+        font-family: Poppins, sans-serif;
+        margin: 0;
+        min-block-size: 100vh;
+        place-items: center;
+        padding: 5vmin;
+      }
+
+      #success {
+        background-clip: text;
+        
+        color: var(--color-background);
+        /* font-size: var(--font-size); */
+      /* font-weight: var(--font-weight);
+        letter-spacing: var(--letter-spacing);
+        padding: calc(--stroke-width / 2);
+        -webkit-text-stroke-color: transparent;
+        -webkit-text-stroke-width: var(--stroke-width);
+      }  */
+      body {
+        background-image: linear-gradient(to right, #09f1b8, #00a2ff, #ff00d2);
+      }
+      h3 {
+        font-size: 30px;
+      }
+      .droppable {
+        height: 200px;
+        width: 310px;
+        float: left;
+        position: relative;
+        margin-right: 2%;
+        margin: 3% 4.5%;
+      }
+
+      .shape1 {
+        width: 200px;
+        height: 30px;
+        background-color: aqua;
+        position: relative;
+        margin: auto;
+        z-index: 1;
+        border-radius: 12px;
+      }
+
+      .shape2 {
+        background-color: royalblue;
+        width: 160px;
+        height: 30px;
+        position: relative;
+        margin: 0 auto;
+        z-index: 1;
+        border-radius: 12px;
+      }
+
+      .shape3 {
+        width: 120px;
+        height: 30px;
+        background-color: yellowgreen;
+        position: relative;
+        margin: auto;
+        z-index: 1;
+        border-radius: 12px;
+      }
+
+      .shape4 {
+        width: 230px;
+        height: 30px;
+        background-color: lightcoral;
+        position: relative;
+        margin: 0 auto;
+        z-index: 1;
+        border-radius: 12px;
+      }
+
+      .shape5 {
+        width: 270px;
+        height: 30px;
+        background-color: lightgray;
+        position: relative;
+        margin: 0 auto;
+        z-index: 1;
+        border-radius: 12px;
+      }
+
+      .shape6 {
+        width: 90px;
+        height: 30px;
+        background-color: lavenderblush;
+        position: relative;
+        margin: 0 auto;
+        z-index: 1;
+        border-radius: 12px;
+      }
+
+      .holder {
+        width: 100%;
+        position: absolute;
+        bottom: 0px;
+      }
+
+      .vertical {
+        width: 15px;
+        height: 200px;
+        border-radius: 12px 12px 0 0;
+        background-color: rgb(243, 66, 66);
+        margin: auto;
+        z-index: 0;
+      }
+      .container {
+        width: 100%;
+        /* align-items: center; */
+      }
+      h3 {
+        color: white;
+        /* font-size: 2.5vw; */
+        /* text-align: center; */
+      }
+
+      @media screen and (max-width: 1400px) {
+        h3 {
+          font-size: 30px;
+        }
+
+        .container {
+          /* margin: 0; */
+          width: 100%;
+          /* align-items: center; */
+        }
+        .vertical {
+          width: 2vw;
+          height: 200px;
+          border-radius: 12px 12px 0 0;
+          background-color: rgb(243, 66, 66);
+          margin: auto;
+          z-index: 0;
+        }
+
+        .shapes {
+          margin: 5% 0;
+          align-items: start;
+        }
+
+        h3 {
+          font-size: 100%;
+        }
+
+        .droppable {
+          height: 200px;
+          width: 30%;
+          float: left;
+          position: relative;
+          /* background-color: antiquewhite; */
+          margin: 0 0 0 0;
+          /* margin-right: 2%; */
+          /* margin: 3% 4.5%; */
+        }
+
+        .shape1 {
+          width: 15vw;
+          height: 30px;
+          background-color: aqua;
+          position: relative;
+          margin: auto;
+          z-index: 1;
+          border-radius: 12px;
+        }
+
+        .shape2 {
+          background-color: royalblue;
+          width: 12vw;
+          height: 30px;
+          position: relative;
+          margin: 0 auto;
+          z-index: 1;
+          border-radius: 12px;
+        }
+
+        .shape3 {
+          width: 9vw;
+          height: 30px;
+          background-color: yellowgreen;
+          position: relative;
+          margin: auto;
+          z-index: 1;
+          border-radius: 12px;
+        }
+
+        .shape4 {
+          width: 18vw;
+          height: 30px;
+          background-color: lightcoral;
+          position: relative;
+          margin: 0 auto;
+          z-index: 1;
+          border-radius: 12px;
+        }
+
+        .shape5 {
+          width: 21vw;
+          height: 30px;
+          background-color: lightgray;
+          position: relative;
+          margin: 0 auto;
+          z-index: 1;
+          border-radius: 12px;
+        }
+
+        #title {
+          font-size: 37px;
+          margin-top: 10%;
+        }
+      }
+      /* 1040-1200 */
+      button {
+        appearance: button;
+        background-color: #1899d6;
+        border: solid transparent;
+        border-radius: 16px;
+        border-width: 0 0 4px;
+        box-sizing: border-box;
+        color: #ffffff;
+        cursor: pointer;
+        display: inline-block;
+        font-family: din-round, sans-serif;
+        font-size: 0.875em;
+        font-weight: 700;
+        letter-spacing: 0.8px;
+        line-height: 20px;
+        margin: 0;
+        outline: none;
+        overflow: visible;
+        /* padding: 13px 16px; */
+        text-transform: uppercase;
+        touch-action: manipulation;
+        transform: translateZ(0);
+        transition: filter 0.2s;
+        user-select: none;
+        -webkit-user-select: none;
+        vertical-align: middle;
+        white-space: nowrap;
+        /* width: 15%; */
+        margin-left: 5%;
+        margin-bottom: 3%;
+      }
+
+      /* button:after {
+        background-clip: padding-box;
+        background-color: #1cb0f6;
+        border: solid transparent;
+        border-radius: 16px;
+        border-width: 0 0 4px;
+        bottom: -4px;
+        content: "";
+        left: 0;
+        position: absolute;
+        right: 0;
+        top: 0;
+        z-index: -1;
+      }
+
+      button:main,
+      button:focus {
+        user-select: auto;
+      }
+
+      button:hover:not(:disabled) {
+        filter: brightness(1.1);
+        -webkit-filter: brightness(1.1);
+      }
+
+      button:disabled {
+        cursor: auto;
+      } */
+      h1 {
+        color: white;
+        text-align: center;
+      }
+      p {
+        font-size: 50px;
+        font-weight: bolder;
+        text-align: center;
+        color: white;
+      }
+      .buttons {
+        /* width: 100%; */
+        text-align: center;
+        /* margin: 0; */
+      }
+      .shapes {
+        text-align: center;
+        background-color: #26d0ce;
+        width: 100%;
+      }
+      .texts {
+        margin-left: 5%;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <p id="title">Ｔｏｗｅｒ ｏｆ Ｈａｎｏｉ</p>
+
+      <h1 id="success"></h1>
+      <div class="buttons">
+        <button id="undo" class="btn btn-primary" disabled="true">Undo</button>
+        <button id="redo" class="btn btn-primary" disabled="true">Redo</button>
+        <button id="restart" class="btn btn-primary">Restart</button>
+      </div>
+      <div class="texts">
+        <h3>Target Tower: 3</h3>
+        <h3>
+          You have to make a move every 5 secs:
+          <span id="timer">5</span> Seconds
+        </h3>
+        <h3>Minimum Moves: 31</h3>
+        <h3 id="currentMoves">Current Moves: <span id="counter">0</span></h3>
+      </div>
+      <div class="shapes">
+        <div class="droppable" id="tower1">
+          <div class="vertical"></div>
+          <div class="holder" id="holder1">
+            <div class="draggable shape3" id="shape3"></div>
+            <div class="draggable shape2" id="shape2"></div>
+            <div class="draggable shape1" id="shape1"></div>
+            <div class="draggable shape4" id="shape4"></div>
+            <div class="draggable shape5" id="shape5"></div>
+          </div>
+        </div>
+
+        <div class="droppable" id="tower2">
+          <div class="vertical"></div>
+          <div class="holder" id="holder2"></div>
+        </div>
+
+        <div class="droppable" id="tower3">
+          <div class="vertical"></div>
+          <div class="holder" id="holder3"></div>
+        </div>
+      </div>
+    </div>
+    <script type="text/javascript">
+      Drag();
+      Drop();
+      // var shape1Left = [];
+      // var shape1Top = [];
+      // var shape2Left = [];
+      // var shape2Top = [];
+      // var shape3Left = [];
+      // var shape3Top = [];
+      var sequence = [];
+      // var start3Left = [];
+      // var start3Top = [];
+      var platforms = [];
+      // var sequencePopped = [];
+      // var platformsPopped = [];
+      // var redoSequencePopped = [];
+      // var redoPlatformsPopped = [];
+      var redoP = [];
+      var redoS = [];
+
+      // var elm = document.getElementById("shape3");
+      // console.log(elm.offsetLeft, elm.offsetTop);
+
+      // var position = $("#shape3").position();
+      // alert("Shape 3 position: " + position.left + " " + position.top);
+
+      // shape3Left.push($("#shape3").offset().left);
+      // shape3Top.push($("#shape3").offset().top);
+
+      // shape2Left.push($("#shape2").offset().left);
+      // shape2Top.push($("#shape2").offset().top);
+
+      // shape1Left.push($("#shape1").offset().left);
+      // shape1Top.push($("#shape1").offset().top);
+
+      // console.log("shape 3 left: " + shape3Left);
+      // console.log("shape 3 top: " + shape3Top);
+      // console.log("shape 2 left: " + shape2Left);
+      // console.log("shape 2 top: " + shape2Top);
+      // console.log("shape 1 left: " + shape1Left);
+      // console.log("shape 1 top: " + shape1Top);
+
+      function Drag() {
+        $(".draggable").draggable({
+          stack: $(".draggable"),
+          helper: "clone",
+          start: function () {
+            // changeColor();
+            timer();
+            if (document.getElementById("success").innerHTML == "𝕐𝕠𝕦 𝕎𝕠𝕟!") {
+              document.getElementById("success").innerHTML = "";
+              document.getElementById("counter").innerText = 0;
+            }
+            // console.log("drag left: " + ui.position.left);
+            // console.log("drag top: " + ui.position.top);
+            // console.log("temp: " + this.parentNode.id);
+            var parentNode = "#" + this.parentNode.id;
+            platforms.push(parentNode);
+            var shape = "#" + this.id;
+            sequence.push(shape);
+            // debugger;
+            // var redoShape = "#" + this.id;
+            // redoSequence.unshift(redoShape);
+            // console.log("redo sequence: " + redoSequence);
+            // if (this.id == "shape3") {
+            //   shape3Left.push($("#shape3").offset().left);
+            //   shape3Top.push($("#shape3").offset().top);
+            //   shape3Left.push(left);
+            //   shape3Top.push(top);
+            //   sequence.push(this.id);
+            // }
+            // if (this.id == "shape2") {
+            //   var offsets = document
+            //     .getElementById("shape2")
+            //     .getBoundingClientRect();
+            //   var top = offsets.top;
+            //   var left = offsets.left;
+            //   console.log("left: " + left);
+            //   console.log("top: " + top);
+            //   console.log("left: " + left);
+            //   console.log("top: " + top);
+            //   shape2Left.push(left);
+            //   shape2Top.push(top);
+            //   sequence.push(this.id);
+            // }
+            // if (this.id == "shape1") {
+            //   var offsets = document
+            //     .getElementById("shape1")
+            //     .getBoundingClientRect();
+            //   var top = offsets.top;
+            //   var left = offsets.left;
+            //   console.log("left: " + left);
+            //   console.log("top: " + top);
+            //   console.log("left: " + left);
+            //   console.log("top: " + top);
+            //   shape1Left.push(left);
+            //   shape1Top.push(top);
+            //   sequence.push(this.id);
+            // }
+
+            // debugger;
+            // console.log("closest: " + this.parentNode.id);
+            // console.log($(this).width());
+            // console.log("This: " + this.id);
+            var shapeParent = this.closest(".holder").id;
+            shapeParent = "#" + shapeParent;
+            // console.log("parent: " + this.parentElement);
+            // debugger;
+            // console.log("parent: " + shapeParent);
+            // console.log($(shapeParent).children()[0].id);
+            // if (
+            //   $(event.target).parent().children().first().attr("id") ==
+            //   event.target.attr("id")
+            // ) {
+            //   console.log("asdasdasdasdsa");
+            //   $(".draggable").draggable({ disabled: true });
+            // }else{
+            //   $(".draggable").draggable({ disabled: false });
+            // }
+            // debugger;
+            // return canMove(shapeParent, event.target);
+
+            // //
+
+            // console.log(
+            //   "function k andar " +
+            //     $(event.target).parent().children().first().attr("id")
+            // );
+            // console.log("asd " + $(event.target).parent().attr("id"));
+            // debugger;
+            // console.log($("#holder1").children()[0].id);
+            if ($(shapeParent).children()[0].id == this.id) {
+              return true;
+            } else {
+              return false;
+            }
+            // console.log("asd2 " + shapeParent.first().attr("id"));
+            // var form1 = $(this).closest(".holder").find(".draggable").first();
+            // console.log("asdf: " + form1.id());
+            // console.log(getElementById(this).parentElement.id);
+            // if($(this).width > )
+          },
+        });
+      }
+
+      function Drop() {
+        $(".droppable").droppable({
+          accept: ".draggable",
+          drop: function (event, ui) {
+            incrementCurrentMoves();
+            // stopInterval();
+            // debugger;
+            // platforms.push(this.id);
+            // var currentPlatform = this.closest(".holder").id();
+            // console.log("target tasdasdasdower: " + this.closest(".holder"));
+            var targetTower = $(this).find(".holder");
+            // debugger;
+            // console.log("temp: " + this.childNodes[3].id);
+            // debugger;
+            // var tempPlatform = "#" + this.childNodes[3].id;
+            // redoPlatforms.unshift(tempPlatform);
+            // console.log("redo platforms: " + redoPlatforms);
+            // console.log("target tower children: " + targetTower.children());
+            // console.log($(targetTower).children());
+            // console.log("drop left: " + ui.position.left);
+            // console.log("drop top: " + ui.position.left);
+            if ($(targetTower).children().length == 0) {
+              $(ui.draggable).appendTo(targetTower);
+            } else {
+              // console.log(
+              // "children width " + $(targetTower).children().css("width")
+              // );
+              // console.log("child width " + ui.draggable.css("width"));
+              if (
+                $(targetTower).children().css("width") >
+                ui.draggable.css("width")
+              ) {
+                $(ui.draggable).prependTo(targetTower);
+              } else {
+                console.log("Cant place here");
+                // redoPlatforms.pop();
+                // redoSequence.pop();
+                platforms.pop();
+                sequence.pop();
+              }
+            }
+            if (
+              this.id == "tower3" &&
+              $(this).find(".holder").children().length == "5"
+            ) {
+              document.getElementById("success").innerHTML = "𝕐𝕠𝕦 𝕎𝕠𝕟!";
+              document.getElementById("success").style.margin = "2%";
+              clearInterval(downloadTimer);
+              disable();
+              // $(".draggable").draggable({disabled: true});
+              // $("#undo").attr({disabled: true});
+              // $("#redo").attr({disabled: true});
+            }
+            // console.log("shape 3 left: " + shape3Left);
+            // console.log("shape 3 top: " + shape3Top);
+            // console.log("shape 2 left: " + shape2Left);
+            // console.log("shape 2 top: " + shape2Top);
+            // console.log("shape 1 left: " + shape1Left);
+            // console.log("shape 1 top: " + shape1Top);
+            $("#undo").attr("disabled", false);
+            // console.log("plaforms: " + platforms);
+            // timer();
+          },
+        });
+      }
+
+      function disable() {
+        console.log("disable");
+        $("#undo").attr("disabled", true);
+        $("#redo").attr("disabled", true);
+      }
+
+      function incrementCurrentMoves() {
+        var counter = document.getElementById("counter").innerText;
+        counter++;
+        document.getElementById("counter").innerText = counter;
+      }
+
+      document.getElementById("restart").onclick = function () {
+        location.reload();
+      };
+      // let nIntervId;
+
+      // function changeColor() {
+      //   // check if an interval has already been set up
+      //   if (!nIntervId) {
+      //     nIntervId = setInterval(startInterval);
+      //   }
+      // }
+
+      // function startInterval() {
+      //   var timeleft = 5;
+      //   var downloadTimer = setInterval(function () {
+      //     if (timeleft <= 0) {
+      //       clearInterval(downloadTimer);
+      //       alert("Game over! You ran out of time\nPlay again ?");
+      //       location.reload();
+      //     } else {
+      //       timeleft -= 1;
+      //       document.getElementById("timer").innerHTML = timeleft;
+      //     }
+      //   }, 1000);
+      // }
+
+      // function stopInterval() {
+      //   clearInterval(nIntervId);
+      //   // release our intervalID from the variable
+      //   nIntervId = null;
+      // }
+
+      // document.getElementsByClassName("draggable").addEventListener("drag", changeColor);
+      // document.getElementById("stop").addEventListener("click", stopInterval);
+
+      var downloadTimer;
+
+      function timer() {
+        // Clear ongoing (if any)
+        clearInterval(downloadTimer);
+
+        var timeleft = 5;
+        downloadTimer = setInterval(function () {
+          if (timeleft <= 0) {
+            // Clear when game over
+            clearInterval(downloadTimer);
+            alert("Game over! You ran out of time\nPlay again ?");
+            location.reload();
+          } else {
+            timeleft -= 1;
+            document.getElementById("timer").innerHTML = timeleft;
+          }
+        }, 1000);
+
+        // function timer() {
+        //   // debugger;
+        //   console.log("timer: "+downloadTimer);
+        //   clearInterval(downloadTimer);
+        //   downloadTimer=null;
+        //   var temp = downloadTimer;
+        //   console.log("timer");
+        //   var timeleft = 10;
+        //   var downloadTimer = setInterval(function () {
+        //     if (timeleft <= 0) {
+        //       clearInterval(downloadTimer);
+        //       alert("Game over! You ran out of time\nPlay again ?");
+        //       location.reload();
+        //     } else {
+        //       timeleft -= 1;
+        //       document.getElementById("timer").innerHTML = timeleft;
+        //     }
+        //   }, 1000);
+
+        // var interval;
+        // // var minutes = 5;
+        // var seconds = 5;
+        // interval = setInterval(function () {
+        //   var el = document.getElementById("timer");
+        //   if (seconds == 0) {
+        //     alert("Game over! You ran out of time");
+        //   }
+        //   var second_text = seconds > 0 ? "seconds" : "second";
+        //   document.getElementById("timer").innerHTML =
+        //     seconds + " " + second_text + " remaining";
+        //   seconds--;
+        // }, 1000);
+      }
+
+      // document.getElementById("undo").onclick = function () {
+      //   if (sequence.length > 0) {
+      //     // var item_redo = undo.pop();
+      //     // redo.push(item_redo);
+      //   } else {
+      //     $("#undo").attr("disabled", true);
+      //   }
+      //   // var item = undo.pop();
+      //   // if (item) {
+      //   //   redo.push(item);
+      //   //   $("#neoContentContainer").html(item);
+      //   // }
+      //   // update_buttons();
+
+      //   // console.log("shape 3:" + shape3Left + " " + shape3Top);
+      //   // console.log("shape 2:" + shape2Left + " " + shape2Top);
+      //   // console.log("shape 1:" + shape1Left + " " + shape1Top);
+      //   // console.log("sequence:" + $(sequence).last()[0]);
+      //   // console.log("Start3f:" + start3Left);
+      //   // console.log("start3t:" + start3Top);
+      //   // var lastMoved = $(sequence).last()[0];
+      //   // // $(".shape3").toggle("slide", { direction: "left" }, 1000);
+
+      //   // var offsets = document.getElementById("shape3").getBoundingClientRect();
+      //   // var top = offsets.top;
+      //   // var left = offsets.left;
+      //   // // console.log("left: " + left);
+      //   // // console.log("top: " + top);
+      //   // // shape3Left.push(left);
+      //   // // shape3Top.push(top);
+      //   // // sequence.push(this.id);
+      //   // var newTop = top - 54;
+      //   // var newLeft = left - 140;
+
+      //   // let id = null;
+      //   // const elem = document.getElementById("shape3");
+      //   // let pos = 0;
+      //   // document.getElementById("shape3").click(function () {
+      //   //   $(this).animate(
+      //   //     {
+      //   //       width: "400px",
+      //   //       height: "400px",
+      //   //       marginLeft: "100px",
+      //   //       marginTop: "100px",
+      //   //     },
+      //   //     2000
+      //   //   );
+      //   // });
+      //   // clearInterval(id);
+      //   // id = setInterval(frame, 5);
+      //   // function frame() {
+      //   //   if (pos == 350) {
+      //   //     clearInterval(id);
+      //   //   } else {
+      //   //     pos++;
+      //   //     elem.style.top = -newLeft + "px";
+      //   //     elem.style.left = -newTop + "px";
+      //   //   }
+      //   // }
+      // };
+      $("#undo").on("click", function () {
+        timer();
+        $("#redo").attr("disabled", false);
+        var lastMoved = sequence.pop();
+        var lastPlatform = platforms.pop();
+        // console.log("sequence: " + sequence);
+        // console.log("platform: " + platforms);
+        // console.log("redo sequence: " + redoSequence);
+        // console.log("redo platforms: " + redoPlatforms);
+        // redoPlatforms.push(lastPlatform);
+        // redoSequence.push(lastMoved);
+        // console.log("lastMoved: " + lastMoved);
+        // console.log("lastPlatform: " + lastPlatform);
+
+        // var $myDraggable = $(lastMoved).draggable({
+        //   // drag: function (event, ui) {
+        //   //   scale(ui.offset.left, ui.offset.top);
+        //   // },
+        // });
+
+        // $myDraggable.animate(
+        //   { left: -250, top: -60 },
+        //   {
+        //     duration: 500,
+        //   }
+        // );
+        // debugger;
+        var temp = "#" + $(lastMoved).parent()[0].id;
+        redoP.push(temp);
+        redoS.push(lastMoved);
+        $(lastMoved).prependTo(lastPlatform);
+      });
+
+      $("#redo").on("click", function () {
+        timer();
+        var destinationPlatform = redoP.pop();
+        var shapeToMove = redoS.pop();
+        console.log("destination platform: " + destinationPlatform);
+        console.log("shape to move: " + shapeToMove);
+        // console.log("sequence: " + sequence);
+        // console.log("platform: " + platforms);
+        // console.log("redo sequence: " + redoSequence);
+        // console.log("redo platforms: " + redoPlatforms);
+        // sequence.push(shapeToMove);
+        // platforms.push(destinationPlatform);
+
+        // var $myDraggable = $(shapeToMove).draggable({});
+        // debugger;
+        var temp = "#" + $(shapeToMove).parent()[0].id;
+        platforms.push(temp);
+        sequence.push(shapeToMove);
+        // shape 2 holder 1
+        $(shapeToMove).prependTo(destinationPlatform);
+      });
+
+      // document.getElementById("undo").addEventListener("click", function () {
+      //   if (sequence.length == 0) {
+      //     $("#undo").attr("disabled", true);
+      //   }
+      // });
+
+      document.getElementById("redo").addEventListener("click", function () {
+        if (redoP.length == 0) {
+          $("#redo").attr("disabled", true);
+        }
+      });
+
+      // var lastMoved = $(sequence).last()[0];
+      // lastMoved = "#" + lastMoved;
+      // var lastPlatform = $(platforms).last()[0];
+      // lastPlatform = "#" + lastPlatform;
+      // $(lastPlatform).droppable({
+      //   accept: lastMoved,
+      // });
+    </script>
+  </body>
+</html>
